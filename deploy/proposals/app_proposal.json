@@ -1,0 +1,152 @@
+{
+  "actions": [
+    {
+      "name": "set_js_app",
+      "args": {
+        "bundle": {
+          "metadata": {
+            "endpoints": {
+              "/account/{user_id}/{account_name}": {
+                "put": {
+                  "js_module": "endpoints/banking.js",
+                  "js_function": "createAccount",
+                  "forwarding_required": "always",
+                  "authn_policies": [ "member_cert" ],
+                  "mode": "readwrite",
+                  "openapi": {
+                    "responses": { "204": { "description": "Ok" } },
+                    "security": [],
+                    "parameters": []
+                  }
+                }
+              },
+              "/deposit/{user_id}/{account_name}": {
+                "post": {
+                  "js_module": "endpoints/banking.js",
+                  "js_function": "deposit",
+                  "forwarding_required": "always",
+                  "authn_policies": [ "member_cert" ],
+                  "mode": "readwrite",
+                  "openapi": {
+                    "responses": { "204": { "description": "Ok" } },
+                    "security": [],
+                    "parameters": [],
+                    "requestBody": {
+                      "required": true,
+                      "content": {
+                        "application/json": {
+                          "schema": {
+                            "properties": { "value": { "type": "number" } },
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "/balance/{account_name}": {
+                "get": {
+                  "js_module": "endpoints/banking.js",
+                  "js_function": "balance",
+                  "forwarding_required": "always",
+                  "authn_policies": [ "user_cert" ],
+                  "mode": "readonly",
+                  "openapi": {
+                    "responses": { "200": { "description": "Ok" } },
+                    "security": [],
+                    "parameters": []
+                  }
+                }
+              },
+              "/transfer/{account_name}": {
+                "post": {
+                  "js_module": "endpoints/banking.js",
+                  "js_function": "transfer",
+                  "forwarding_required": "always",
+                  "authn_policies": [ "user_cert" ],
+                  "mode": "readwrite",
+                  "openapi": {
+                    "responses": { "204": { "description": "Ok" } },
+                    "security": [],
+                    "parameters": [],
+                    "requestBody": {
+                      "required": true,
+                      "content": {
+                        "application/json": {
+                          "schema": {
+                            "properties": {
+                              "value": { "type": "number" },
+                              "user_id_to": { "type": "string" },
+                              "account_name_to": { "type": "string" }
+                            },
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "/receipt": {
+                "get": {
+                  "js_module": "endpoints/banking.js",
+                  "js_function": "getTransactionReceipt",
+                  "forwarding_required": "always",
+                  "authn_policies": [ "user_cert" ],
+                  "mode": "readonly",
+                  "openapi": {
+                    "responses": { "200": { "description": "Ok" } },
+                    "security": [],
+                    "parameters": [
+                      {
+                        "in": "query",
+                        "name": "transaction_id",
+                        "required": true
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "modules": [
+            {
+              "name": "endpoints/all.js",
+              "module": "export { balance, createAccount, deposit, getTransactionReceipt, transfer } from './banking.js';\n"
+            },
+            {
+              "name": "endpoints/banking.js",
+              "module": "import { typedKv } from '../node_modules/@microsoft/ccf-app/kv.js';\nimport { json, string, uint32, arrayBuffer } from '../node_modules/@microsoft/ccf-app/converters.js';\nimport '../node_modules/@microsoft/ccf-app/consensus.js';\nimport '../node_modules/@microsoft/ccf-app/historical.js';\nimport '../node_modules/@microsoft/ccf-app/endpoints.js';\nimport { ccf } from '../node_modules/@microsoft/ccf-app/global.js';\n\nfunction parseRequestQuery(request) {\n    const elements = request.query.split(\"&\");\n    const obj = {};\n    for (const kv of elements) {\n        const [k, v] = kv.split(\"=\");\n        obj[k] = v;\n    }\n    return obj;\n}\nconst claimTableName = \"current_claim\";\nconst currentClaimTable = typedKv(claimTableName, string, json());\nconst keyForClaimTable = \"key\";\nfunction getAccountTable(userId) {\n    return typedKv(`user_accounts:${userId}`, string, uint32);\n}\nfunction getCallerId(request) {\n    const caller = request.caller;\n    return caller.id;\n}\nfunction validateUserId(userId) {\n    const usersCerts = typedKv(\"public:ccf.gov.users.certs\", arrayBuffer, arrayBuffer);\n    return usersCerts.has(ccf.strToBuf(userId));\n}\nfunction isPositiveInteger(value) {\n    return Number.isInteger(value) && value > 0;\n}\nfunction createAccount(request) {\n    const userId = request.params.user_id;\n    if (!validateUserId(userId)) {\n        return {\n            statusCode: 404,\n        };\n    }\n    const accountToBalance = getAccountTable(userId);\n    const accountName = request.params.account_name;\n    if (accountToBalance.has(accountName)) {\n        return {\n            statusCode: 204,\n        };\n    }\n    accountToBalance.set(accountName, 0);\n    console.log(\"Create Account Completed\");\n    return {\n        statusCode: 204,\n    };\n}\nfunction deposit(request) {\n    let body;\n    try {\n        body = request.body.json();\n    }\n    catch {\n        return {\n            statusCode: 400,\n        };\n    }\n    const value = body.value;\n    if (!isPositiveInteger(value)) {\n        return {\n            statusCode: 400,\n        };\n    }\n    const userId = request.params.user_id;\n    if (!validateUserId(userId)) {\n        return {\n            statusCode: 404,\n        };\n    }\n    const accountName = request.params.account_name;\n    const accountToBalance = getAccountTable(userId);\n    if (!accountToBalance.has(accountName)) {\n        return { statusCode: 404 };\n    }\n    accountToBalance.set(accountName, accountToBalance.get(accountName) + value);\n    console.log(\"Deposit Completed\");\n    return {\n        statusCode: 204,\n    };\n}\nfunction balance(request) {\n    const userId = getCallerId(request);\n    const accountName = request.params.account_name;\n    const accountToBalance = getAccountTable(userId);\n    if (!accountToBalance.has(accountName)) {\n        return { statusCode: 404 };\n    }\n    return { body: { balance: accountToBalance.get(accountName) } };\n}\nfunction transfer(request) {\n    let body;\n    try {\n        body = request.body.json();\n    }\n    catch {\n        return {\n            statusCode: 400,\n        };\n    }\n    const value = body.value;\n    if (!isPositiveInteger(value)) {\n        return {\n            statusCode: 400,\n        };\n    }\n    const userId = getCallerId(request);\n    const accountName = request.params.account_name;\n    const accountNameTo = body.account_name_to;\n    const userIdTo = body.user_id_to;\n    if (!validateUserId(userIdTo)) {\n        return {\n            statusCode: 404,\n        };\n    }\n    const accountToBalance = getAccountTable(userId);\n    if (!accountToBalance.has(accountName)) {\n        return { statusCode: 404 };\n    }\n    const accountToBalanceTo = getAccountTable(userIdTo);\n    if (!accountToBalanceTo.has(accountNameTo)) {\n        return { statusCode: 404 };\n    }\n    const balance = accountToBalance.get(accountName);\n    if (value > balance) {\n        return { statusCode: 400, body: \"Balance is not enough\" };\n    }\n    accountToBalance.set(accountName, balance - value);\n    accountToBalanceTo.set(accountNameTo, accountToBalanceTo.get(accountNameTo) + value);\n    const claim = `${userId} sent ${value} to ${userIdTo}`;\n    currentClaimTable.set(keyForClaimTable, { userId, claim });\n    const claimDigest = ccf.digest(\"SHA-256\", ccf.strToBuf(claim));\n    ccf.rpc.setClaimsDigest(claimDigest);\n    console.log(\"Transfer Completed\");\n    return {\n        statusCode: 204,\n    };\n}\nfunction validateTransactionId(transactionId) {\n    if (typeof transactionId !== \"string\") {\n        return false;\n    }\n    const strNums = transactionId.split(\".\");\n    if (strNums.length !== 2) {\n        return false;\n    }\n    return (isPositiveInteger(parseInt(strNums[0])) &&\n        isPositiveInteger(parseInt(strNums[1])));\n}\nfunction getTransactionReceipt(request) {\n    const parsedQuery = parseRequestQuery(request);\n    const transactionId = parsedQuery.transaction_id;\n    if (!validateTransactionId(transactionId)) {\n        return {\n            statusCode: 400,\n        };\n    }\n    const userId = getCallerId(request);\n    const txNums = transactionId.split(\".\");\n    const seqno = parseInt(txNums[1]);\n    const rangeBegin = seqno;\n    const rangeEnd = seqno;\n    const makeHandle = (begin, end, id) => {\n        const cacheKey = `${begin}-${end}-${id}`;\n        const digest = ccf.digest(\"SHA-256\", ccf.strToBuf(cacheKey));\n        const handle = new DataView(digest).getUint32(0);\n        return handle;\n    };\n    const handle = makeHandle(rangeBegin, rangeEnd, transactionId);\n    const expirySeconds = 1800;\n    const states = ccf.historical.getStateRange(handle, rangeBegin, rangeEnd, expirySeconds);\n    if (states === null) {\n        return {\n            statusCode: 202,\n            headers: {\n                \"retry-after\": \"1\",\n            },\n            body: `Historical transactions from ${rangeBegin} to ${rangeEnd} are not yet available, fetching now`,\n        };\n    }\n    const firstKv = states[0].kv;\n    const claimTable = typedKv(firstKv[claimTableName], string, json());\n    if (!claimTable.has(keyForClaimTable)) {\n        return {\n            statusCode: 404,\n        };\n    }\n    const claimItem = claimTable.get(keyForClaimTable);\n    if (claimItem.userId !== userId) {\n        return {\n            statusCode: 404,\n        };\n    }\n    const receipt = states[0].receipt;\n    const body = {\n        cert: receipt.cert,\n        leaf_components: {\n            claim: claimItem.claim,\n            commit_evidence: receipt.leaf_components.commit_evidence,\n            write_set_digest: receipt.leaf_components.write_set_digest,\n        },\n        node_id: receipt.node_id,\n        proof: receipt.proof,\n        signature: receipt.signature,\n    };\n    return {\n        body,\n    };\n}\n\nexport { balance, createAccount, deposit, getTransactionReceipt, transfer };\n"
+            },
+            {
+              "name": "node_modules/@microsoft/ccf-app/consensus.js",
+              "module": "import { ccf } from './global.js';\n\n// Copyright (c) Microsoft Corporation. All rights reserved.\n/**\n * @inheritDoc CCFConsensus.getLastCommittedTxId;\n */\nccf.consensus.getLastCommittedTxId.bind(ccf.consensus);\n/**\n * @inheritDoc CCFConsensus.getStatusForTxId;\n */\nccf.consensus.getStatusForTxId.bind(ccf.consensus);\n/**\n * @inheritDoc CCFConsensus.getViewForSeqno;\n */\nccf.consensus.getViewForSeqno.bind(ccf.consensus);\n"
+            },
+            {
+              "name": "node_modules/@microsoft/ccf-app/converters.js",
+              "module": "import { ccf } from './global.js';\n\n// Copyright (c) Microsoft Corporation. All rights reserved.\nfunction checkNumber(val) {\n    if (typeof val !== \"number\") {\n        throw new TypeError(`Value ${val} is not a number`);\n    }\n}\nfunction checkString(val) {\n    if (typeof val !== \"string\") {\n        throw new TypeError(`Value ${val} is not a string`);\n    }\n}\nclass Uint32Converter {\n    encode(val) {\n        checkNumber(val);\n        if (val < 0 || val > 4294967295) {\n            throw new RangeError(\"value is not within uint32 range\");\n        }\n        const buf = new ArrayBuffer(4);\n        new DataView(buf).setUint32(0, val, true);\n        return buf;\n    }\n    decode(buf) {\n        return new DataView(buf).getUint32(0, true);\n    }\n}\nclass StringConverter {\n    encode(val) {\n        checkString(val);\n        return ccf.strToBuf(val);\n    }\n    decode(buf) {\n        return ccf.bufToStr(buf);\n    }\n}\nclass JSONConverter {\n    encode(val) {\n        return ccf.jsonCompatibleToBuf(val);\n    }\n    decode(buf) {\n        return ccf.bufToJsonCompatible(buf);\n    }\n}\nclass IdentityConverter {\n    encode(val) {\n        return val;\n    }\n    decode(buf) {\n        return buf;\n    }\n}\n/**\n * Converter for `number` values, encoded as `uint32`.\n *\n * Example:\n * ```\n * const buf = ccfapp.uint32.encode(50000); // ArrayBuffer of size 4\n * const val = ccfapp.uint32.decode(buf);   // number\n * ```\n */\nconst uint32 = new Uint32Converter();\n/**\n * Converter for `string` values, encoded as UTF-8.\n *\n * Example:\n * ```\n * const buf = ccfapp.string.encode('my-string'); // ArrayBuffer\n * const val = ccfapp.string.decode(buf);         // string\n * ```\n */\nconst string = new StringConverter();\n/**\n * Returns a converter for JSON-compatible objects or values.\n *\n * {@linkcode DataConverter.encode | encode} first serializes the object\n * or value to JSON and then converts the resulting string to an `ArrayBuffer`.\n * JSON serialization uses `JSON.stringify()` without `replacer` or\n * `space` parameters.\n *\n * {@linkcode DataConverter.decode | decode} converts the `ArrayBuffer`\n * to a string and parses it using `JSON.parse()` without `reviver`\n * parameter.\n *\n * Example:\n * ```\n * interface Person {\n *   name: string\n *   age: number\n * }\n * const person: Person = { name: \"John\", age: 42 };\n * const conv = ccfapp.json<Person>();\n * const buffer = conv.encode(person); // ArrayBuffer\n * const person2 = conv.decode(buffer); // Person\n * ```\n */\nconst json = () => new JSONConverter();\n/**\n * Identity converter.\n * {@linkcode DataConverter.encode | encode} / {@linkcode DataConverter.decode | decode}\n * return the input `ArrayBuffer` unchanged. No copy is made.\n *\n * This converter can be used with {@linkcode kv.typedKv} when the key or value\n * type is `ArrayBuffer`, in which case no conversion is applied.\n */\nconst arrayBuffer = new IdentityConverter();\n\nexport { arrayBuffer, json, string, uint32 };\n"
+            },
+            {
+              "name": "node_modules/@microsoft/ccf-app/endpoints.js",
+              "module": "import { ccf } from './global.js';\n\n// Copyright (c) Microsoft Corporation. All rights reserved.\n/**\n * @inheritDoc CCF.rpc.setApplyWrites\n */\nccf.rpc.setApplyWrites.bind(ccf.rpc);\n/**\n * @inheritDoc CCF.rpc.setClaimsDigest\n */\nccf.rpc.setClaimsDigest.bind(ccf.rpc);\n"
+            },
+            {
+              "name": "node_modules/@microsoft/ccf-app/global.js",
+              "module": "// Copyright (c) Microsoft Corporation. All rights reserved.\n// Licensed under the Apache 2.0 License.\n/**\n * This module describes the global {@linkcode ccf} variable.\n * Direct access of this module or the {@linkcode ccf} variable is\n * typically not needed as all of its functionality is exposed\n * via other, often more high-level, modules.\n *\n * Accessing the {@linkcode ccf} global in a type-safe way is done\n * as follows:\n *\n * ```\n * import { ccf } from '@microsoft/ccf-app/global.js';\n * ```\n *\n * @module\n */\n// The global ccf variable and associated types are exported\n// as a regular module instead of using an ambient namespace\n// in a .d.ts definition file.\n// This avoids polluting the global namespace.\nconst ccf = globalThis.ccf;\n\nexport { ccf };\n"
+            },
+            {
+              "name": "node_modules/@microsoft/ccf-app/historical.js",
+              "module": "import { ccf } from './global.js';\n\n// Copyright (c) Microsoft Corporation. All rights reserved.\n/**\n * @inheritDoc global!CCF.historicalState\n */\nccf.historicalState;\n/**\n * @inheritDoc CCFHistorical.getStateRange\n */\nccf.historical.getStateRange.bind(ccf.historical);\n/**\n * @inheritDoc CCFHistorical.dropCachedStates\n */\nccf.historical.dropCachedStates.bind(ccf.historical);\n"
+            },
+            {
+              "name": "node_modules/@microsoft/ccf-app/kv.js",
+              "module": "import { ccf } from './global.js';\n\n// Copyright (c) Microsoft Corporation. All rights reserved.\nclass TypedKvMap {\n    constructor(kv, kt, vt) {\n        this.kv = kv;\n        this.kt = kt;\n        this.vt = vt;\n    }\n    has(key) {\n        return this.kv.has(this.kt.encode(key));\n    }\n    get(key) {\n        const v = this.kv.get(this.kt.encode(key));\n        return v === undefined ? undefined : this.vt.decode(v);\n    }\n    set(key, value) {\n        this.kv.set(this.kt.encode(key), this.vt.encode(value));\n        return this;\n    }\n    delete(key) {\n        this.kv.delete(this.kt.encode(key));\n    }\n    clear() {\n        this.kv.clear();\n    }\n    forEach(callback) {\n        let kt = this.kt;\n        let vt = this.vt;\n        let typedMap = this;\n        this.kv.forEach(function (raw_v, raw_k, table) {\n            callback(vt.decode(raw_v), kt.decode(raw_k), typedMap);\n        });\n    }\n    get size() {\n        return this.kv.size;\n    }\n}\n/**\n * Returns a typed view of a map in the Key-Value Store,\n * where keys and values are automatically converted\n * to and from ``ArrayBuffer`` based on the given key\n * and value converters.\n *\n * See the {@linkcode converters} module for available converters.\n *\n * @param nameOrMap Either the map name in the Key-Value Store,\n *    or a ``KvMap`` object.\n * @param kt The converter to use for map keys.\n * @param vt The converter to use for map values.\n */\nfunction typedKv(nameOrMap, kt, vt) {\n    const kvMap = typeof nameOrMap === \"string\" ? ccf.kv[nameOrMap] : nameOrMap;\n    return new TypedKvMap(kvMap, kt, vt);\n}\n/**\n * @inheritDoc global!CCF.kv\n */\nccf.kv;\n\nexport { TypedKvMap, typedKv };\n"
+            }
+          ]
+        },
+        "disable_bytecode_cache": false
+      }
+    }
+  ]
+}
