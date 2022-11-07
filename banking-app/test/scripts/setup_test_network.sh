@@ -61,6 +61,17 @@ create_test_network_proposal(){
 JSON
 }
 
+# create a default proposal accept logic
+create_proposal_vote_accept(){
+    local fileName="vote_accept.json"
+
+    cat <<JSON > $fileName
+{
+  "ballot": "export function vote (proposal, proposerId) { return true }"
+}
+JSON
+}
+
 
 # print new line
 print_line()
@@ -89,6 +100,9 @@ cd ~/repos/ccf-app-samples/run-app
 docker cp "$containerId:/app/service_cert.pem" .    
 docker cp "$containerId:/app/member0_cert.pem" .
 docker cp "$containerId:/app/member0_privk.pem" .
+
+echo "create a default proposal accept logic"
+create_proposal_vote_accept
 
 echo "create a network proposal"
 create_test_network_proposal
