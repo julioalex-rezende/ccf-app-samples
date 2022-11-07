@@ -18,8 +18,8 @@ Applications can be written in
 
 ## Development environment
 - Development container and VSCode [![Open in VSCode](https://img.shields.io/static/v1?label=Open+in&message=VSCode&logo=visualstudiocode&color=007ACC&logoColor=007ACC&labelColor=2C2C32)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/microsoft/ccf-app-template) 
-- Linux VM ([Install ccf as prerequisites](https://microsoft.github.io/CCF/main/build_apps/install_bin.html))
 - Github codespace: [![Github codespace](https://img.shields.io/static/v1?label=Open+in&message=GitHub+codespace&logo=github&color=2F363D&logoColor=white&labelColor=2C2C32)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=496290904&machine=basicLinux32gb&devcontainer_path=.devcontainer.json&location=WestEurope)
+- Linux VM ([Install ccf as prerequisites](https://microsoft.github.io/CCF/main/build_apps/install_bin.html))
 
 ## Application Testing (JS/Typescript)
 
@@ -42,9 +42,9 @@ npm --prefix ./js run build
 ### Testing: Using Virtual docker container 
 
 When you build and run the docker file "ccf_app_js.virtual", it is only starting a CCF network with one node and one member
-you need to make the following governance steps to deploy your application and open the network for users to access the endpoints.
+you need to make the following governance steps to deploy your application and open the network for users to access your endpoints.
 all the governance steps is done using proposal submit and vote process (all these steps can be done in one proposal)
 - Activate the member
-- Add users
-- Deploy the application
-- Open the network for users
+- Add users (proposal)
+- Deploy the application (proposal)
+- Open the network for users (proposal)

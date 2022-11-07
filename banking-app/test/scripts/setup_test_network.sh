@@ -27,49 +27,13 @@ create_test_network_proposal(){
     local member1_encryption_pub_key=$(< member1_enc_pubk.pem sed '$!G' | paste -sd '\\n' -)
     local service_cert=$(< service_cert.pem sed '$!G' | paste -sd '\\n' -)
     
+    # inject certs to network_open_proposal
     local proposalFileName="network_open_proposal.json"
-    cat <<JSON > $proposalFileName
-{
-  "actions": [
-    {
-      "name": "set_member",
-      "args": {
-        "cert": "${member1_cert}\n",
-        "encryption_pub_key": "${member1_encryption_pub_key}\n"
-      }
-    },
-    {
-      "name": "set_user",
-      "args": {
-        "cert": "${user0_cert}\n"
-      }
-    },
-    {
-      "name": "set_user",
-      "args": {
-        "cert": "${user1_cert}\n"
-      }
-    },
-    {
-      "name": "transition_service_to_open",
-      "args": {
-        "next_service_identity": "${service_cert}\n"
-      }
-    }
-  ]
-}
-JSON
-}
-
-# create a default proposal accept logic
-create_proposal_vote_accept(){
-    local fileName="vote_accept.json"
-
-    cat <<JSON > $fileName
-{
-  "ballot": "export function vote (proposal, proposerId) { return true }"
-}
-JSON
+    sed -i 's/member1_cert/${member1_cert}/g' $proposalFileName
+    sed -i 's/member1_encryption_pub_key/${member1_encryption_pub_key}/g' $proposalFileName
+    sed -i 's/user0_cert/${user0_cert}/g' $proposalFileName
+    sed -i 's/user1_cert/${user1_cert}/g' $proposalFileName
+    sed -i 's/service_cert/${service_cert}/g' $proposalFileName
 }
 
 
@@ -83,11 +47,11 @@ print_line()
 if [ $setupType = "release" ]
 then
     echo "Start a test release sgx network with one node container"
-    docker build -t ccf-app-samples:js-enclave -f ~/repos/ccf-app-samples/banking-app/deploy/ccf_app_js.enclave .
+    docker build -t ccf-app-samples:js-enclave -f ccf_app_js.enclave .
     docker run -d --device /dev/sgx_enclave:/dev/sgx_enclave --device /dev/sgx_provision:/dev/sgx_provision -v /dev/sgx:/dev/sgx ccf-app-samples:js-enclave
 else
     echo "Start a test virtual network with one node container"
-    docker build -t ccf-app-samples:js-virtual -f ~/repos/ccf-app-samples/banking-app/deploy/ccf_app_js.virtual .
+    docker build -t ccf-app-samples:js-virtual -f ccf_app_js.virtual .
     docker run -d ccf-app-samples:js-virtual
 fi
 
@@ -100,9 +64,6 @@ cd ~/repos/ccf-app-samples/run-app
 docker cp "$containerId:/app/service_cert.pem" .    
 docker cp "$containerId:/app/member0_cert.pem" .
 docker cp "$containerId:/app/member0_privk.pem" .
-
-echo "create a default proposal accept logic"
-create_proposal_vote_accept
 
 echo "create a network proposal"
 create_test_network_proposal

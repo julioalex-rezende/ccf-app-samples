@@ -1,4 +1,4 @@
-# CCF Environment Setup
+# CCF Test Environment Setup
 
 ## Azure Hosting Environment
 - Azure Virtual Machine - not support TEE hardware - will work with virtual mode only
@@ -15,14 +15,16 @@ git clone https://github.com/Aymalla/ccf-app-samples.git
 
 cd ccf-app-samples && mkdir run-app && cd run-app
 
-cp ~/repos/ccf-app-samples/banking-app/constitutions/resolve.js .
+cp ~/repos/ccf-app-samples/config/*.json .
 
-cp ~/repos/ccf-app-samples/banking-app/deploy/config/*.json .
+cp ~/repos/ccf-app-samples/docker/* .
 
-cp ~/repos/ccf-app-samples/banking-app/deploy/proposals/app_proposal.json .
+cp ~/repos/ccf-app-samples/banking-app/test/proposals/*.json .
 
-cp -r ~/repos/ccf-app-samples/banking-app/deploy/scripts/ . && chmod u+x scripts/*.sh
+cp -r ~/repos/ccf-app-samples/banking-app/test/scripts/ . && chmod u+x scripts/*.sh
 
+sed -i 's/127.0.0.1/172.17.0.2/g' cchost_config_enclave_js.json # replace container IP
+sed -i 's/127.0.0.1/172.17.0.2/g' cchost_config_virtual_js.json # replace container IP
 
 ## Install CCF on fresh VM
 ./scripts/setup_ccf_on_vm.sh
@@ -31,8 +33,8 @@ cp -r ~/repos/ccf-app-samples/banking-app/deploy/scripts/ . && chmod u+x scripts
 ## setupType: {"virtual": "virtual ccf network (not need for TEE hardware)" , "release":  "SGX ccf network (need a TEE hardware)"}
 node_url="https://172.17.0.2:8080"
 
-./scripts/setup_test_network.sh $node_url "virtual"
-#./scripts/setup_test_network.sh $node_url "release"
+#./scripts/setup_test_network.sh $node_url "virtual"
+./scripts/setup_test_network.sh $node_url "release"
 
 ## Run application testing
 ./scripts/run_app_test.sh $node_url
