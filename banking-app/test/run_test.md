@@ -25,7 +25,9 @@ cp ~/repos/ccf-app-samples/docker/* .
 
 cp ~/repos/ccf-app-samples/banking-app/test/proposals/*.json .
 
-cp -r ~/repos/ccf-app-samples/banking-app/test/scripts/ . && chmod u+x scripts/*.sh
+cp -r ~/repos/ccf-app-samples/banking-app/test/scripts/ .
+cp /opt/ccf/bin/keygenerator.sh ./scripts
+chmod u+x scripts/*.sh
 
 sed -i 's/127.0.0.1/172.17.0.2/g' cchost_config_enclave_js.json # replace container IP
 sed -i 's/127.0.0.1/172.17.0.2/g' cchost_config_virtual_js.json # replace container IP
