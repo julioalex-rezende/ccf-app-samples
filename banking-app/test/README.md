@@ -1,4 +1,4 @@
-# CCF Test Environment Setup
+# CCF Application Test Environment Setup
 
 ## Azure Hosting Environment
 - Azure Confidential Computing (VM - Linux) - Support SGX TEE (Trusted Execution Environment)
