@@ -9,7 +9,7 @@ create_certificate(){
     local certName="$1"
     local certFile="${1}_cert.pem"
     local setUserFile="set_${1}.json"
-    /opt/ccf/bin/keygenerator.sh --name $certName --gen-enc-key
+    keygenerator.sh --name $certName --gen-enc-key
 }
 
 
