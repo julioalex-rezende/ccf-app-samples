@@ -1,8 +1,12 @@
 # CCF Application Test Environment Setup
 
 ## Azure Hosting Environment
-- Azure Confidential Computing (VM - Linux) - Support SGX TEE (Trusted Execution Environment)
-- Azure Virtual Machine - no support for TEE hardware - will work with virtual mode only
+- Azure Confidential Computing (VM - Linux) 
+    - SGX hardware is installed as TEE (Trusted Execution Environment) 
+    - Both Release and Virtual modes will be supported
+- Or Normal Azure Virtual Machine (Linux) 
+    - No TEE hardware installed 
+    - Only Virtual mode will be supported
 
 ## Remote Access Azure VM using SSH
 cd /mnt/c/ayman/repos/azure/ccf-vm
@@ -33,8 +37,9 @@ cp /opt/ccf/bin/scurl.sh .
 
 chmod u+x *.sh
 
-sed -i 's/127.0.0.1/172.17.0.2/g' cchost_config_enclave_js.json # replace container IP
-sed -i 's/127.0.0.1/172.17.0.2/g' cchost_config_virtual_js.json # replace container IP
+sed -i 's/127.0.0.1/172.17.0.2/g' cchost_config_enclave_js.json # replace container IP inside config
+
+sed -i 's/127.0.0.1/172.17.0.2/g' cchost_config_virtual_js.json # replace container IP inside config
 
 ## Install CCF on fresh VM
 ./scripts/setup_ccf_on_vm.sh

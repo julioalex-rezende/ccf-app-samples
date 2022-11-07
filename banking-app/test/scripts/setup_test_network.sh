@@ -121,3 +121,5 @@ curl "${node_url}/node/network/nodes" --cacert service_cert.pem
 print_line
 curl "${node_url}/node/version" --cacert service_cert.pem
 print_line
+curl "${node_url}/gov/members" --silent | jq
+print_line
