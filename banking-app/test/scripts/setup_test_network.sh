@@ -72,21 +72,21 @@ print_line
 echo "Activate Member 0"
 curl "${node_url}/gov/ack/update_state_digest" -X POST --cacert service_cert.pem --key member0_privk.pem --cert member0_cert.pem --silent | jq > request.json
 cat request.json
-scurl.sh "${node_url}/gov/ack"  --cacert service_cert.pem --signing-key member0_privk.pem --signing-cert member0_cert.pem --header "Content-Type: application/json" --data-binary @request.json
+./scurl.sh "${node_url}/gov/ack"  --cacert service_cert.pem --signing-key member0_privk.pem --signing-cert member0_cert.pem --header "Content-Type: application/json" --data-binary @request.json
 print_line
 
 echo "Submit Application proposal and accept"
-proposal0_out=$(scurl.sh "${node_url}/gov/proposals" --cacert service_cert.pem --signing-key member0_privk.pem --signing-cert member0_cert.pem --data-binary @app_proposal.json -H "content-type: application/json")
+proposal0_out=$(./scurl.sh "${node_url}/gov/proposals" --cacert service_cert.pem --signing-key member0_privk.pem --signing-cert member0_cert.pem --data-binary @app_proposal.json -H "content-type: application/json")
 proposal0_id=$( jq -r  '.proposal_id' <<< "${proposal0_out}" )
 echo $proposal0_id
-scurl.sh "${node_url}/gov/proposals/$proposal0_id/ballots" --cacert service_cert.pem --signing-key member0_privk.pem --signing-cert member0_cert.pem --data-binary @vote_accept.json -H "content-type: application/json" | jq
+./scurl.sh "${node_url}/gov/proposals/$proposal0_id/ballots" --cacert service_cert.pem --signing-key member0_privk.pem --signing-cert member0_cert.pem --data-binary @vote_accept.json -H "content-type: application/json" | jq
 print_line
 
 echo "Submit Network open proposal and accept"
-proposal0_out=$(scurl.sh "${node_url}/gov/proposals" --cacert service_cert.pem --signing-key member0_privk.pem --signing-cert member0_cert.pem --data-binary @network_open_proposal.json -H "content-type: application/json")
+proposal0_out=$(./scurl.sh "${node_url}/gov/proposals" --cacert service_cert.pem --signing-key member0_privk.pem --signing-cert member0_cert.pem --data-binary @network_open_proposal.json -H "content-type: application/json")
 proposal0_id=$( jq -r  '.proposal_id' <<< "${proposal0_out}" )
 echo $proposal0_id
-scurl.sh "${node_url}/gov/proposals/$proposal0_id/ballots" --cacert service_cert.pem --signing-key member0_privk.pem --signing-cert member0_cert.pem --data-binary @vote_accept.json -H "content-type: application/json" | jq
+./scurl.sh "${node_url}/gov/proposals/$proposal0_id/ballots" --cacert service_cert.pem --signing-key member0_privk.pem --signing-cert member0_cert.pem --data-binary @vote_accept.json -H "content-type: application/json" | jq
 print_line
 
 echo "Test Network"
