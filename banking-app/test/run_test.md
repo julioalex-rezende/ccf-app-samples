@@ -45,4 +45,4 @@ node_url="https://172.17.0.2:8080"
 ./setup_test_network.sh $node_url "release"
 
 ## Run application testing
-./scripts/run_app_test.sh $node_url
+./run_app_test.sh $node_url
