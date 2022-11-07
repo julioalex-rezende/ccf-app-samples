@@ -1,8 +1,8 @@
 # CCF Test Environment Setup
 
 ## Azure Hosting Environment
-- Azure Virtual Machine - not support TEE hardware - will work with virtual mode only
-- Azure Confidential Computing (Virtual Machine) - Which Support SGX TEE (Trusted Execution Environment)
+- Azure Confidential Computing (VM - Linux) - Support SGX TEE (Trusted Execution Environment)
+- Azure Virtual Machine - no support for TEE hardware - will work with virtual mode only
 
 ## Remote Access Azure VM using SSH
 cd /mnt/c/ayman/repos/azure/ccf-vm
@@ -12,6 +12,10 @@ sudo ssh -i accvm-key-pair.pem azureuser@20.254.140.95
 mkdir repos && cd ~/repos
 
 git clone https://github.com/Aymalla/ccf-app-samples.git
+
+cd  ccf-app-samples 
+git checkout aym/dev-getstarted
+cd ..
 
 cd ccf-app-samples && mkdir run-app && cd run-app
 
