@@ -23,6 +23,8 @@ cp ~/repos/ccf-app-samples/config/*.json .
 
 cp ~/repos/ccf-app-samples/docker/* .
 
+cp ~/repos/ccf-app-samples/banking-app/constitutions/*.js .
+
 cp ~/repos/ccf-app-samples/banking-app/test/proposals/*.json .
 
 cp -r ~/repos/ccf-app-samples/banking-app/test/scripts/*.sh .
