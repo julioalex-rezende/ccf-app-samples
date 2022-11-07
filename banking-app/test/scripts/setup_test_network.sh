@@ -21,44 +21,19 @@ create_test_network_proposal(){
     create_certificate "user1"
     create_certificate "member1"
 
-    local user0_cert=$(< user0_cert.pem sed '$!G' | paste -sd '\\n' -)
-    local user1_cert=$(< user1_cert.pem sed '$!G' | paste -sd '\\n' -)
-    local member1_cert=$(< member1_cert.pem sed '$!G' | paste -sd '\\n' -)
-    local member1_encryption_pub_key=$(< member1_enc_pubk.pem sed '$!G' | paste -sd '\\n' -)
-    local service_cert=$(< service_cert.pem sed '$!G' | paste -sd '\\n' -)
+    user0_cert=$(< user0_cert.pem sed '$!G' | paste -sd '\\n' -)
+    user1_cert=$(< user1_cert.pem sed '$!G' | paste -sd '\\n' -)
+    member1_cert=$(< member1_cert.pem sed '$!G' | paste -sd '\\n' -)
+    member1_encryption_pub_key=$(< member1_enc_pubk.pem sed '$!G' | paste -sd '\\n' -)
+    service_cert=$(< service_cert.pem sed '$!G' | paste -sd '\\n' -)
     
-    local proposalFileName="network_open_proposal.json"
-    cat <<JSON > $proposalFileName
-{
-  "actions": [
-    {
-      "name": "set_member",
-      "args": {
-        "cert": "${member1_cert}\n",
-        "encryption_pub_key": "${member1_encryption_pub_key}\n"
-      }
-    },
-    {
-      "name": "set_user",
-      "args": {
-        "cert": "${user0_cert}\n"
-      }
-    },
-    {
-      "name": "set_user",
-      "args": {
-        "cert": "${user1_cert}\n"
-      }
-    },
-    {
-      "name": "transition_service_to_open",
-      "args": {
-        "next_service_identity": "${service_cert}\n"
-      }
-    }
-  ]
-}
-JSON
+    # inject certs to network_open_proposal
+    proposalFileName="network_open_proposal.json"
+    sed -i "s|member1_cert|$member1_cert|g" $proposalFileName
+    sed -i "s|member1_encryption_pub_key|$member1_encryption_pub_key|g" $proposalFileName
+    sed -i "s|user0_cert|$user0_cert|g" $proposalFileName
+    sed -i "s|user1_cert|$user1_cert|g" $proposalFileName
+    sed -i "s|service_cert|$service_cert|g" $proposalFileName
 }
 
 
