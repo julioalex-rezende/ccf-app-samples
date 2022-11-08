@@ -7,7 +7,7 @@ Get started repository for building CCF applications using (JavaScript and C++).
 What is CCF: The [Confidential Consortium Framework (CCF)](https://ccf.dev/) is an open-source framework for building a new category of secure, highly available,
 and performant applications that focus on multi-party compute and data.
 
-- Read the [CCF overview](https://ccf.microsoft.com/) and get familiar with [CCF's core concepts](https://microsoft.github.io/CCF/main/overview/what_is_ccf.html)
+- Read the [CCF overview](https://microsoft.github.io/CCF/main/overview/index.html) and get familiar with [CCF's core concepts](https://microsoft.github.io/CCF/main/overview/what_is_ccf.html)
 - [Build new CCF applications](https://microsoft.github.io/CCF/main/build_apps/index.html) in TypeScript/JavaScript or C++
 - CCF [Modules API reference](https://microsoft.github.io/CCF/main/js/ccf-app/modules.html)
 - CCF application get started repos
@@ -64,6 +64,9 @@ all the governance work is done for you.
 
 ```bash
 /opt/ccf/bin/sandbox.sh --js-app-bundle ./js/dist/
+...
+[12:00:00.000] Press Ctrl+C to shutdown the network
+# It is then possible to interact with the service
 ```
 
 ### Testing: Using docker containers
@@ -79,12 +82,16 @@ Start a CCF network that support TEE hardware via docker container based on conf
 ```bash
  docker build -t ccf-app-samples:js-enclave -f docker/ccf_app_js.enclave .
  docker run -d --device /dev/sgx_enclave:/dev/sgx_enclave --device /dev/sgx_provision:/dev/sgx_provision -v /dev/sgx:/dev/sgx ccf-app-samples:js-enclave
+ ...
+ # CCF Network initialization needed before the interaction with the service
 ```
 
 Or virtual mode  based on virtual config file: "./config/cchost_config_virtual_js.json":
 ```bash
  docker build -t ccf-app-samples:js-virtual -f docker/ccf_app_js.virtual .
  docker run -d ccf-app-samples:js-virtual
+ ...
+ # CCF Network initialization needed before the interaction with the service
 ```
 
 #### CCF Node Configuration file
@@ -125,8 +132,11 @@ Network is started with one (node - member), you need to execute the following g
 
 Now you can send requests to your endpoints, following sample requests to log application [(ccf-app-template)](https://github.com/microsoft/ccf-app-template/tree/main/js)
 
+In another terminal:
 ```bash
+ # send log message to be saved
  curl -X POST https://127.0.0.1:8000/app/log?id=1 --cacert ./workspace/sandbox_common/service_cert.pem -H "Content-Type: application/json" --data '{"msg": "hello world"}'
+ # retrieve log message
  curl https://127.0.0.1:8000/app/log?id=1 --cacert ./workspace/sandbox_common/service_cert.pem
  # return:> hello world
 ```
@@ -189,7 +199,7 @@ docker run ccf-app-template:virtual
 ---
 
 # Network Governance
-Consortium of trusted Members governs the CCF network. members can submit proposals to CCF and these proposals are accepted based on the rules defined in the [Constitution](https://microsoft.github.io/CCF/main/governance/constitution.html).
+Consortium of trusted Members [governs the CCF network](https://microsoft.github.io/CCF/main/governance/index.html). members can submit proposals to CCF and these proposals are accepted based on the rules defined in the [Constitution](https://microsoft.github.io/CCF/main/governance/constitution.html).
 Governance changes are submitted to a [network as Proposals](https://microsoft.github.io/CCF/main/governance/proposals.html), and put to a vote from members.
 
 Submit a proposal 
@@ -250,7 +260,7 @@ Once a CCF network is successfully started and an acceptable number of nodes hav
 }
 ```
 
-## Deploy application using proposal
+## Network Governance: Application deployment
 The native format for JavaScript applications in CCF is a [JavaScript application bundle](https://microsoft.github.io/CCF/main/build_apps/js_app_bundle.html), or short app bundle. A bundle can be wrapped directly into a governance proposal for deployment.
 
 ### Application deployment proposal

@@ -8,9 +8,12 @@
     - No TEE hardware installed 
     - Only Virtual mode will be supported
 
-## Remote Access Azure VM using SSH
-cd /mnt/c/ayman/repos/azure/ccf-vm
-sudo ssh -i accvm-key-pair.pem azureuser@20.254.140.95
+## Remote Access your Azure VM using SSH
+
+sudo ssh -i ./key.pem user@VMIP
+
+## Install CCF runtime on fresh VM
+./scripts/setup_ccf_on_vm.sh
 
 ### Clone samples repo
 mkdir repos && cd ~/repos
@@ -41,8 +44,6 @@ sed -i 's/127.0.0.1/172.17.0.2/g' cchost_config_enclave_js.json # replace contai
 
 sed -i 's/127.0.0.1/172.17.0.2/g' cchost_config_virtual_js.json # replace container IP inside config
 
-## Install CCF on fresh VM
-./scripts/setup_ccf_on_vm.sh
 
 ## Start a ccf test network  & deploy the sample application using docker image
 ## setupType: {"virtual": "virtual ccf network (not need for TEE hardware)" , "release":  "SGX ccf network (need a TEE hardware)"}
