@@ -12,7 +12,7 @@ and performant applications that focus on multi-party compute and data.
 - CCF [Modules API reference](https://microsoft.github.io/CCF/main/js/ccf-app/modules.html)
 - CCF application get started repos
     -  [CCF application template](https://github.com/microsoft/ccf-app-template)
-    -  [CCF application samples](https://github.com/microsoft/ccf-app-template)
+    -  [CCF application samples](https://github.com/microsoft/ccf-app-samples)
 
 ## Supported Programing Languages
 Applications can be written in
