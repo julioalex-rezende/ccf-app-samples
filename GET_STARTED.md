@@ -7,7 +7,7 @@ Get started repository for building CCF applications using (JavaScript and C++).
 What is CCF: The [Confidential Consortium Framework (CCF)](https://ccf.dev/) is an open-source framework for building a new category of secure, highly available,
 and performant applications that focus on multi-party compute and data.
 
-- Read the [CCF overview](https://microsoft.github.io/CCF/main/overview/index.html) and get familiar with [CCF's core concepts](https://microsoft.github.io/CCF/main/overview/what_is_ccf.html)
+- Read the [CCF overview](https://microsoft.github.io/CCF/main/overview/index.html) and get familiar with [CCF's core concepts](https://microsoft.github.io/CCF/main/overview/what_is_ccf.html) and [Azure confidential computing](https://learn.microsoft.com/en-us/azure/confidential-computing/)
 - [Build new CCF applications](https://microsoft.github.io/CCF/main/build_apps/index.html) in TypeScript/JavaScript or C++
 - CCF [Modules API reference](https://microsoft.github.io/CCF/main/js/ccf-app/modules.html)
 - CCF application get started repos
@@ -24,7 +24,7 @@ Applications can be written in
 ## Development environment
 - Development container and VSCode [![Open in VSCode](https://img.shields.io/static/v1?label=Open+in&message=VSCode&logo=visualstudiocode&color=007ACC&logoColor=007ACC&labelColor=2C2C32)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/microsoft/ccf-app-samples) 
 - Github codespace: [![Github codespace](https://img.shields.io/static/v1?label=Open+in&message=GitHub+codespace&logo=github&color=2F363D&logoColor=white&labelColor=2C2C32)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=496290904&machine=basicLinux32gb&devcontainer_path=.devcontainer.json&location=WestEurope)
-- Linux Machine ([Install ccf as prerequisites](https://microsoft.github.io/CCF/main/build_apps/install_bin.html))
+- Linux Machine ([Create a VM](https://learn.microsoft.com/en-us/azure/confidential-computing/quick-create-portal) and [Install ccf](https://microsoft.github.io/CCF/main/build_apps/install_bin.html))
 
 ## <img src="https://user-images.githubusercontent.com/42961061/191275583-88e00f94-73aa-4d66-9786-047987eb9fa9.png" height=50px> </img>  (JS/Typescript) Applications
 To test a ccf application you need go through the following steps:
