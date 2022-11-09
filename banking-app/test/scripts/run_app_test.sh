@@ -33,7 +33,7 @@ print_line
 echo "Transfer 40 from user0 to user1"
 transfer_transaction_id=$(curl $node_url/app/transfer/$account_type0 -X POST -i --cacert service_cert.pem --cert user0_cert.pem --key user0_privk.pem -H "Content-Type: application/json" --data-binary "{ \"value\": 40, \"user_id_to\": \"$user1_id\", \"account_name_to\": \"$account_type1\" }" | grep -i x-ms-ccf-transaction-id | awk '{print $2}' | sed -e 's/\r//g')
 echo "transaction ID of the transfer: $transfer_transaction_id"
-echo "Display reciept"
+echo "Display receipt"
 curl $node_url/app/receipt?transaction_id=$transfer_transaction_id --cacert service_cert.pem --key user0_privk.pem --cert user0_cert.pem
 print_line
 
