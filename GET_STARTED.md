@@ -128,17 +128,51 @@ Network is started with one (node - member), you need to execute the following g
 - Deploy the application (using proposal)
 - Open the network for users (using proposal)
 
-### Testing: Send requests to your endpoints 
+### Testing: Application Endpoints  
 
 Now you can send requests to your endpoints, following sample requests to log application [(ccf-app-template)](https://github.com/microsoft/ccf-app-template/tree/main/js)
 
 In another terminal:
+
+#### Log application
 ```bash
  # send log message to be saved
  curl -X POST https://127.0.0.1:8000/app/log?id=1 --cacert ./workspace/sandbox_common/service_cert.pem -H "Content-Type: application/json" --data '{"msg": "hello world"}'
  # retrieve log message
  curl https://127.0.0.1:8000/app/log?id=1 --cacert ./workspace/sandbox_common/service_cert.pem
  # return:> hello world
+```
+
+#### Banking application
+```bash
+echo "Define vars"
+user0_id=$(openssl x509 -in "user0_cert.pem" -noout -fingerprint -sha256 | cut -d "=" -f 2 | sed 's/://g' | awk '{print tolower($0)}')
+user1_id=$(openssl x509 -in "user1_cert.pem" -noout -fingerprint -sha256 | cut -d "=" -f 2 | sed 's/://g' | awk '{print tolower($0)}')
+account_type0='current_account'
+account_type1='savings_account'
+
+echo "create accounts"
+curl https://ccf_service_url/app/account/$user0_id/$account_type0 -X PUT --cacert service_cert.pem --cert member0_cert.pem --key member0_privk.pem
+curl https://ccf_service_url/app/account/$user1_id/$account_type1 -X PUT --cacert service_cert.pem --cert member0_cert.pem --key member0_privk.pem
+
+echo "deposit and display balance for account0"
+curl https://ccf_service_url/app/deposit/$user0_id/$account_type0 -X POST --cacert service_cert.pem --cert member0_cert.pem --key member0_privk.pem -H "Content-Type: application/json" --data-binary '{ "value": 100 }'
+curl https://ccf_service_url/app/balance/$account_type0 -X GET --cacert service_cert.pem --cert user0_cert.pem --key user0_privk.pem
+
+echo "deposit and display balance for account1"
+curl https://ccf_service_url/app/deposit/$user1_id/$account_type1 -X POST --cacert service_cert.pem --cert member0_cert.pem --key member0_privk.pem -H "Content-Type: application/json" --data-binary '{ "value": 2000 }'
+curl https://ccf_service_url/app/balance/$account_type1 -X GET --cacert service_cert.pem --cert user1_cert.pem --key user1_privk.pem
+
+echo "Transfer 40 from user0 to user1"
+transfer_transaction_id=$(curl https://ccf_service_url/app/transfer/$account_type0 -X POST -i --cacert service_cert.pem --cert user0_cert.pem --key user0_privk.pem -H "Content-Type: application/json" --data-binary "{ \"value\": 40, \"user_id_to\": \"$user1_id\", \"account_name_to\": \"$account_type1\" }" | grep -i x-ms-ccf-transaction-id | awk '{print $2}' | sed -e 's/\r//g')
+echo "transaction ID of the transfer: $transfer_transaction_id"
+
+echo "Display receipt"
+curl https://ccf_service_url/app/receipt?transaction_id=$transfer_transaction_id --cacert service_cert.pem --key user0_privk.pem --cert user0_cert.pem
+
+echo "Display balance"
+curl https://ccf_service_url/app/balance/$account_type0 -X GET --cacert service_cert.pem --cert user0_cert.pem --key user0_privk.pem
+curl https://ccf_service_url/app/balance/$account_type1 -X GET --cacert service_cert.pem --cert user1_cert.pem --key user1_privk.pem
 ```
 
 ## <img src="https://user-images.githubusercontent.com/42961061/191275172-24269bf0-bb9c-402d-8900-2d589582a781.png" height=50px></img> C++ Applications 
@@ -301,7 +335,7 @@ Once the proposal has received enough votes under the rules of the Constitution 
 }
 ```
 
-# Dependencies Installation
+# Development Dependencies Installation
 
 - CCF Setup
 - NodeJS
