@@ -23,12 +23,9 @@ sudo ssh -i ./key.pem user@VMIP
 # node_ip="172.17.0.2" #Container
 node_url="https://${node_ip}:8080"
 
-mkdir repos && cd ~/repos
-git clone https://github.com/Aymalla/ccf-app-samples.git
-cd  ccf-app-samples 
-git checkout aym/dev-getstarted
-cd ..
-cd ccf-app-samples && mkdir run-app && cd run-app
+mkdir -p ~/repos && cd ~/repos
+git clone https://github.com/microsoft/ccf-app-samples.git
+cd ccf-app-samples && mkdir -p run-app && cd run-app
 cp ~/repos/ccf-app-samples/config/*.json .
 cp ~/repos/ccf-app-samples/docker/* .
 

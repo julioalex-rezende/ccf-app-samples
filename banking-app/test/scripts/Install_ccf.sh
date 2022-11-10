@@ -4,7 +4,7 @@ set -euo pipefail
 echo "Install CCF" 
 
 echo "Clone CCF Repo to be used in the Prerequisites Installation"
-cd ~/repos
+mkdir -p ~/repos && cd ~/repos
 git clone https://github.com/microsoft/CCF.git
 
 echo "Install CCF Prerequisites"
