@@ -12,14 +12,14 @@ and performant applications that focus on multi-party compute and data.
   - [CCF application template](https://github.com/microsoft/ccf-app-template)
   - [CCF application samples](https://github.com/microsoft/ccf-app-samples)
 
-## Supported Programing Languages
+## Supported Programming Languages
 
 Applications can be written in
 
 - TypeScript
 - JavaScript
 - C++
-- More languages support upcoming in 2023
+- More language support upcoming in 2023
 
 ## Development environment
 
