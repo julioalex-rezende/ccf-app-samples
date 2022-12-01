@@ -26,6 +26,13 @@ CCF is based on web technologies: clients interact with CCF JavaScript applicati
 
 multiparty systems
 
+Applications can be written in
+
+TypeScript
+JavaScript
+C++
+More languages support upcoming in 2023
+
 
 ## Samples
 
