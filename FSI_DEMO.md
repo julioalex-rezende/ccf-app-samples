@@ -1,5 +1,8 @@
 # FSI DEMO > CCF (Confidential Consortium Framework)
 
+## Context
+
+We are a Neutrino team 
 
 ## What is CCF?
 
