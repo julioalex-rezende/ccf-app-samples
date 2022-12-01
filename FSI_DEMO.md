@@ -2,10 +2,10 @@
 
 ## Context
 
-We are Neutrino team, currently working on internal engagement with CCF team to 
+We are the Neutrino team, currently working on internal engagement with CCF team to 
 - Upskill on CCF concepts and applications
-- Enrich developer experience by supporting documentation
-- Create new application sample 
+- Enrich developer experience by documentation feedback
+- Create new application sample (Data- Reconciliation)
 
 ## What is CCF?
 
@@ -20,20 +20,18 @@ CCF is based on web technologies: clients interact with CCF JavaScript applicati
 
 ## CCF Network Attributes
 
-- Nodes [TEE > secure - multi-nodes >  highly-available and performant]
-- Constitution
-- Members
-- Users
-- Proposals [Used for deploying any change to the netwrok (application upgrades - new members and users) ]
+- Nodes [Run on TEE > secure] -[multi-nodes >  highly-available and performant]
+- Constitution [How the network will be governed]
+- Members [Who will run and govern the network (Proposal Submitting - Proposal voting) like(Banks) ]
+- Users [Actual users of the network (Bank Customers) ]
+- Proposals [Used for deploying any change to the network (application upgrade - new members and users)]
 - Ledger [All changes to the Key-Value Store are encrypted and recorded by each node of the network to disk to a decentralised auditable ledger.]
-- Application
+- Application (The business application)
 
 ## Applications
 
-multiparty systems
-
+Multiparty systems
 Applications can be written in [TypeScript - JavaScript - C++ - More upcoming]
-
 
 ## Samples
 
