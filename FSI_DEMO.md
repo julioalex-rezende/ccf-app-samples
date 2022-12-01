@@ -20,13 +20,14 @@ CCF is based on web technologies; clients interact with CCF JavaScript applicati
 
 ## CCF Network Attributes
 
-- Nodes [Run on TEE > secure] Nodes[multi-nodes > highly-available and performant]
-- Constitution [How the network will be governed]
-- Members [Who will run and govern the network (proposal submission and voting), such as banks]
-- Users [Actual users of the network (bank customers)]]
-- Proposals [Used to deploy any network change (application upgrade for new members and users)]
-- Ledger [All changes to the Key-Value Store are encrypted and recorded to disc by each network node, resulting in a decentralised auditable ledger.]
-- Application (the business application)
+- **Nodes** [Run on TEE > secure] Nodes[multi-nodes > highly-available and performant]
+- **Constitution** [How the network will be governed- JavaScript module that defines possible governance actions, and how members’ proposals are validated, resolved and applied to the service]
+- **Operators** [Are in charge of operating a CCF network (e.g. adding or removing nodes)]
+- **Members** [Constitute the consortium governing a CCF network (proposal submission and voting), such as banks]
+- **Users** [Users directly interact with the application running in CCF (bank customers)]
+- **Proposals** [Used to deploy any network change (application upgrade for new members and users)]
+- **Ledger** [All changes to the Key-Value Store are encrypted and recorded to disc by each network node, resulting in a decentralised auditable ledger]
+- **Application** (the business application)
 
 ## Applications
 
