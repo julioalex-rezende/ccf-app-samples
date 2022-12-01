@@ -3,11 +3,11 @@
 ## Context
 
 We are the Neutrino team, currently working on internal engagement with the CCF team to
-- CCF concept and application training
+- Upskilling on CCF concept and application 
 - Improve developer experience by providing documentation feedback.
 - Create a new application sample (data reconciliation).
 
-What is CCF?
+## What is CCF?
 
 The Confidential Consortium Framework (CCF) is an open-source framework for building a new category of secure, highly-available, and performant applications that focus on multi-party compute and data.
 
@@ -31,7 +31,10 @@ CCF is based on web technologies; clients interact with CCF JavaScript applicati
 
 ## Applications
 
-Multiparty systems can be written in [TypeScript, JavaScript, C++, and more will be supported in the future]
+
+![Applications](https://learn.microsoft.com/en-us/azure/confidential-computing/media/use-cases-scenarios/use-cases.png)
+
+[Secure multi-party systems](https://learn.microsoft.com/en-us/azure/confidential-computing/use-cases-scenarios) can be written in [TypeScript, JavaScript, C++, and more will be supported in the future]
 
 ## Samples
 
