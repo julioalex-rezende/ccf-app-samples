@@ -17,6 +17,7 @@ CCF is based on web technologies; clients interact with CCF JavaScript applicati
 
 ![CCF Network](https://microsoft.github.io/CCF/main/_images/about-ccf.png)
 
+
 ## CCF Network Attributes
 
 - **Nodes** [Run on TEE > secure] [multi-nodes > highly-available and performant]
@@ -29,19 +30,23 @@ CCF is based on web technologies; clients interact with CCF JavaScript applicati
 - **Application** (the business application)
 
 
-## Managed CCF (mCCF)
-
-![MCCF](https://techcommunity.microsoft.com/t5/image/serverpage/image-id/411970i6E4FE2814D429D03/image-size/large?v=v2&px=999)
-
 ## Applications
-
 
 ![Applications](https://learn.microsoft.com/en-us/azure/confidential-computing/media/use-cases-scenarios/use-cases.png)
 
 [Secure multi-party systems](https://learn.microsoft.com/en-us/azure/confidential-computing/use-cases-scenarios) can be written in [TypeScript, JavaScript, C++, and more will be supported in the future]
+
+
+## Managed CCF (mCCF)
+
+![MCCF](https://techcommunity.microsoft.com/t5/image/serverpage/image-id/411970i6E4FE2814D429D03/image-size/large?v=v2&px=999)
 
 ## Samples
 
 A sample application for a bank consortium: A bank system that can be run by multiple banks
 
 https://github.com/microsoft/ccf-app-samples/tree/main/banking-app
+
+## Resources
+
+[CCF Documentation](https://microsoft.github.io/CCF/main/overview/index.html)
