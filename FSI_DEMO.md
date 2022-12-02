@@ -17,7 +17,6 @@ CCF is based on web technologies; clients interact with CCF JavaScript applicati
 
 ![CCF Network](https://microsoft.github.io/CCF/main/_images/about-ccf.png)
 
-
 ## CCF Network Attributes
 
 - **Nodes** [Run on TEE > secure] [multi-nodes > highly-available and performant]
@@ -25,9 +24,14 @@ CCF is based on web technologies; clients interact with CCF JavaScript applicati
 - **Operators** [Are in charge of operating a CCF network (e.g. adding or removing nodes)]
 - **Members** [Constitute the consortium governing a CCF network (proposal submission and voting), such as banks]
 - **Users** [Users directly interact with the application running in CCF (bank customers)]
-- **Proposals** [Used to deploy any network change (application upgrade for new members and users)]
+- **Proposals** [Used to deploy any network change (application upgrade - Add new members - Add new users - open or close the Network)]
 - **Ledger** [All changes to the Key-Value Store are encrypted and recorded to disc by each network node, resulting in a decentralised auditable ledger]
 - **Application** (the business application)
+
+
+## Managed CCF (mCCF)
+
+![MCCF](https://techcommunity.microsoft.com/t5/image/serverpage/image-id/411970i6E4FE2814D429D03/image-size/large?v=v2&px=999)
 
 ## Applications
 
