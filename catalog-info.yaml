@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ccf-app-samples
+  annotations:
+    github.com/project-slug: julioalex-rezende/ccf-app-samples
+spec:
+  type: other
+  lifecycle: unknown
+  owner: guests
